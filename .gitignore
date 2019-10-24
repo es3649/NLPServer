@@ -1,4 +1,6 @@
 docs/
 bin/
 libs/
+# private key file and key passwords
 lig.keystore
+src/Password.java
