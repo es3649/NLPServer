@@ -45,7 +45,7 @@ public class FileHandler implements HttpHandler {
             
             Files.copy(sitePath, httpResponse);
         } catch (IOException ex) {
-            // this should still fly, but we want to lof him before he goes
+            // this should still fly, but we want to log him before he goes
             Server.logger.log(Level.SEVERE, "Error serving file", ex);
             throw ex;
         } finally {

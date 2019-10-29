@@ -71,13 +71,14 @@ public class Server {
 
 
         } catch (IOException ex) {
+            // log the error we already got:
+            logger.log(Level.WARNING, "Failed to initialize file logger", ex);
+        } finally {
             Handler consoleHandler = new ConsoleHandler();
             consoleHandler.setLevel(logLevel);
             consoleHandler.setFormatter(new SimpleFormatter());
             logger.addHandler(consoleHandler);
 
-            // log the error we already got:
-            logger.log(Level.WARNING, "Failed to initialize file logger", ex);
         }
     }
 
@@ -165,6 +166,7 @@ public class Server {
 
         // account for various classes of errors
         } catch (IOException ex) {
+            logger.log(Level.SEVERE, "Caught IOException", ex);
             System.out.println("Failed to initialize");
             return;
         } catch (NoSuchAlgorithmException ex) {
