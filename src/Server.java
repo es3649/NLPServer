@@ -1,9 +1,12 @@
 package main;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.ArrayIndexOutOfBoundsException;
 import java.lang.NumberFormatException;
 import java.net.InetSocketAddress;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
@@ -11,13 +14,24 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-import java.text.SimpleDateFormat;
+import java.security.KeyManagementException;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.sql.Timestamp;
 import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLParameters;
 import javax.net.ssl.TrustManagerFactory;
 
 
 import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpsConfigurator;
+import com.sun.net.httpserver.HttpsParameters;
 import com.sun.net.httpserver.HttpsServer;
 
 import handler.*;
@@ -46,8 +60,11 @@ public class Server {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss");
             Date date = new Date();
             Timestamp ts = new Timestamp(date.getTime());
+
+            String filename = "log/server"+ sdf.format(ts) +".txt";
+            new File(filename).createNewFile();
             
-            FileHandler fileHandler = new FileHandler("log/server"+ sdf.format(ts) +".txt");
+            FileHandler fileHandler = new FileHandler(filename);
             fileHandler.setLevel(logLevel);
             fileHandler.setFormatter(new SimpleFormatter());
             logger.addHandler(fileHandler);
@@ -85,7 +102,7 @@ public class Server {
         s.run(port);
     }
 
-    private static final int MAX_WAITING_CONNS = 12;
+    private static final int MAX_WAITING_CONNS = 24;
     private HttpsServer server;
 
     /**
@@ -98,19 +115,22 @@ public class Server {
         try {
             // load certificate
             char[] password = Password.password().toCharArray();        // keystore password
-            KeyStore ks = KeyStore.getInstance("JKS");                  // create keystore
+            KeyStore ks = KeyStore.getInstance("JKS");                  // create keystore, throws KeystoreException
             FileInputStream fis = new FileInputStream("lig.keystore");  // read and load the key
+            // throws KeystoreException, NoSuchAlgorithmException, CertificateException
             ks.load(fis, password);
 
-            // display certificate
-            Certificate cert = ks.getCertificate("alias");
-            System.out.println(String.format("using certificate %s", cert));
+            // display certificate, throws KeystoreException
+            Certificate cert = ks.getCertificate("self_signed");
+            System.out.printf("using certificate %s\n", cert);
 
             // set up key manager
-            KeyManagerFactory tmf = KeyManagerFactory.getInstance("SunX509");
+            // throws UnrecoverableKeyException, KeystoreException, NoSuchAlgorithmException
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
             kmf.init(ks, password);
 
             // set up trust manager factory
+            // Throws KeystoreException, NoSuchAlgorithmException
             TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
             tmf.init(ks);
 
@@ -118,9 +138,11 @@ public class Server {
             server = HttpsServer.create(
                 new InetSocketAddress(port), 
                 MAX_WAITING_CONNS);
+            // throws NoSuchAlgorithmException
             SSLContext sslContext = SSLContext.getInstance("TLS");
 
             // set up HTTPS context and parameters
+            // throws KeyManagementException
             sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
             server.setHttpsConfigurator(new HttpsConfigurator(sslContext) {
                 public void configure(HttpsParameters params) {
@@ -133,25 +155,45 @@ public class Server {
                         params.setProtocols(engine.getEnabledProtocols());
 
                         // get default parameters
-                        SSLParamaters defaultSSLParameters = c.getDefaultSSLParameters();
+                        SSLParameters defaultSSLParameters = c.getDefaultSSLParameters();
                         params.setSSLParameters(defaultSSLParameters);
                     } catch (Exception ex) {
-                        logger.log(Level.Error, "Failed to create HTTPS port", ex);
+                        logger.log(Level.SEVERE, "Failed to create HTTPS port", ex);
                     }
                 }
             });
 
+        // account for various classes of errors
         } catch (IOException ex) {
             System.out.println("Failed to initialize");
             return;
+        } catch (NoSuchAlgorithmException ex) {
+            logger.log(Level.SEVERE, "Algorithm not found", ex);
+            return;
+        } catch (KeyStoreException ex) {
+            logger.log(Level.SEVERE, "Keystore Error", ex);
+            return;
+        } catch (KeyManagementException ex) {
+            logger.log(Level.SEVERE, "Key management Error", ex);
+            return;
+        } catch (UnrecoverableKeyException ex) {
+            logger.log(Level.SEVERE, "Key is unrecoverable", ex);
+            return;
+        } catch (CertificateException ex) {
+            logger.log(Level.SEVERE, "Certificate Error", ex);
+            return;
         }
+
         // don't know what this does, apparently it's important
         server.setExecutor(null);
 
         // create the contexts
         System.out.println("Creating contexts");
 
+        // a file handler in case we want to serve up webpages
         server.createContext("/", new handler.FileHandler());
+        // we need a process handler
+        server.createContext("/analyze", new handler.AnalysisHandler());
 
         // start the server!
         System.out.println("Starting server...");

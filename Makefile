@@ -1,4 +1,4 @@
-build:
+compile:
 	./tools/compile.sh
 
 javadoc:
