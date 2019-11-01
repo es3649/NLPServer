@@ -36,6 +36,7 @@ import com.sun.net.httpserver.HttpsServer;
 
 import handler.*;
 import main.Password;
+import main.PasswordProvider;
 
 
 /** class Server
@@ -44,9 +45,11 @@ public class Server {
     public Server() {}
 
     public static Logger logger;
+    public static PasswordProvider password;
 
     static {
         Level logLevel = Level.FINEST;
+        password = new Password();
 
         logger = Logger.getLogger("server");
         logger.setLevel(logLevel);
@@ -115,9 +118,9 @@ public class Server {
         System.out.println("Initializing server");
         try {
             // load certificate
-            char[] password = Password.password().toCharArray();        // keystore password
+            char[] password = Server.password.KeystorePassword().toCharArray();        // keystore password
             KeyStore ks = KeyStore.getInstance("JKS");                  // create keystore, throws KeystoreException
-            FileInputStream fis = new FileInputStream("lig.keystore");  // read and load the key
+            FileInputStream fis = new FileInputStream(Server.password.KeystoreFilename());  // read and load the key
             // throws KeystoreException, NoSuchAlgorithmException, CertificateException
             ks.load(fis, password);
 

@@ -22,7 +22,7 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
 
-import main.Password;
+import main.Server;
 
 
 /**
@@ -43,7 +43,7 @@ public class SheetsAPIProxy {
      * we may need to update this to use writing as well
      */
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS_READONLY);
-    private static final String CREDENTIALS_FILE_PATH = "credentials.json";
+    private static final String CREDENTIALS_FILE_PATH = Server.password.GoogleCredentialsFile();
  
     private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         //load the secrets
@@ -65,7 +65,7 @@ public class SheetsAPIProxy {
 
     public static List<List<Object>> getSheet() throws IOException, GeneralSecurityException {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        final String spreadsheetID = Password.getSheetID();
+        final String spreadsheetID = Server.password.AppointmentSheetID();
         // TODO we need to figure out how to get the range.
         // perhaps we will automate creation of new sub-sheets
         final String range = null;

@@ -1,0 +1,33 @@
+package main;
+
+/**
+ * PasswordProvider provides an interface for the hidden password files
+ * 
+ * Passwords and sensitive informaiton must be provided at various times.
+ * They should all be distributed through this class.
+ */
+public interface PasswordProvider {
+    /**
+     * Returns the Keystore filename
+     * @return keystore filename as a string
+     */
+    public String KeystoreFilename();
+
+    /**
+     * Returns the password to the keystore
+     * @return keystore password as a string
+     */
+    public String KeystorePassword();
+
+    /**
+     * returns the ID of the google sheet we are accessing
+     * @return google sheet ID as a string
+     */
+    public String AppointmentSheetID();
+
+    /**
+     * returns the name of the credentials file
+     * @return the name of the credentials file as a string
+     */
+    public String GoogleCredentialsFile();
+}

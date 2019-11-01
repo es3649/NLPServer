@@ -3,10 +3,10 @@ build:
 
 javadoc:
 	./tools/compiledocs.sh
-	scp -r docs/* seric@schizo.cs.byu.edu:~/public_html/fms/docs/
+	# scp -r docs/* seric@schizo.cs.byu.edu:~/public_html/fms/docs/
 
 copy_schema:
-	scp schema.html seric@schizo.cs.byu.edu:~/public_html/fms/docs/
+	# scp schema.html seric@schizo.cs.byu.edu:~/public_html/fms/docs/
 
 junit:
 	./tools/runJunitTests.sh
