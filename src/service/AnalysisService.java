@@ -8,8 +8,12 @@ import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations;
 import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 import edu.stanford.nlp.trees.*;
 import edu.stanford.nlp.util.*;
+import service.exception.ServiceErrorException;
+import service.request.AnalysisRequest;
+import service.response.AnalysisResponse;
 
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 import java.io.File;
 import java.io.IOException;
 
@@ -18,7 +22,7 @@ import java.io.IOException;
  */
 public class AnalysisService {
     // this should probably have a sync lock? we don't really want more than 1 instance of coreNLP running at once
-    AnalysisService() {
+    public AnalysisService() {
         
     }
 
@@ -32,6 +36,17 @@ public class AnalysisService {
 
     
     private static final StanfordCoreNLP pipeline;
+    private static ReentrantLock lock = new ReentrantLock();
+
+    /**
+     * Does all the work in analyzing a message and deciding what to do with it
+     * @param req the request object for this service
+     * @return the response object for this service
+     */
+    public AnalysisResponse serve(AnalysisRequest req) 
+            throws ServiceErrorException {
+        return null;
+    }
 
     /**
      * parse takes a string and smacks it with coreNLP
@@ -39,6 +54,8 @@ public class AnalysisService {
      * @return TODO
      */
     public static void parse(String input) {
+        // No more than one process should be allowed to use coreNLP at a time
+        AnalysisService.lock.lock();
 
         // create a new annotation
         Annotation annotation = new Annotation(input);
@@ -53,5 +70,7 @@ public class AnalysisService {
             System.out.println(sentence.get(SemanticGraphCoreAnnotations.BasicDependenciesAnnotation.class).toString(SemanticGraph.OutputFormat.LIST));
             
         }
+
+        AnalysisService.lock.unlock();
     }
 }
