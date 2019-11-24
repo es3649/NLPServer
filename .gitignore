@@ -3,6 +3,6 @@ bin/
 libs/jars/*
 # private key file and key passwords
 lig.keystore
-src/Password.java
+com/studmane/nlpserver/Password.java
 credentials.json
 log/*
