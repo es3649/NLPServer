@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class SheetsAPIProxy {
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
-    public static List<List<Object>> getSheet() throws IOException, GeneralSecurityException {
+    private static List<List<Object>> getSheet() throws IOException, GeneralSecurityException {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         final String spreadsheetID = Server.password.AppointmentSheetID();
         // TODO we need to figure out how to get the range.
@@ -77,5 +78,38 @@ public class SheetsAPIProxy {
             .get(spreadsheetID, range)
             .execute();
         return response.getValues();
+    }
+
+    /**
+     * Gets the open apointment slots on the given day
+     * @param timesOnThisDay the day on which to get appointment times
+     * @param withBishop do we require these times to be with bishop, or not?
+     * @return a list of available times on given date
+     */
+    public List<Calendar> getAvailableTimes(Calendar timesOnThisDay, boolean withBishop) {
+        // get sheet
+        // read values for dates and times
+        // get closest times to church (for sundays) or to 6:45 (for Wednesdays) (with pseudo BFS)
+        assert false;
+        return null;
+    }
+
+    /**
+     * reserves an appointment in the spreadsheet
+     * @param appointment the time of the appointment to reserve
+     * @param name the nape of the person tp reserve it for
+     * @param purpose
+     */
+    public void reserveAppointment(Calendar appointment, String name, String purpose) {
+        // create 
+        assert false;
+    }
+
+    /**
+     * create a new sheet in the target streadsheet for a new month of appointments
+     * @param month some date in the month for which we will create the new sheet
+     */
+    public void createNewMonthSheet(Calendar month) {
+        assert false;
     }
 }

@@ -30,4 +30,13 @@ public interface PasswordProvider {
      * @return the name of the credentials file as a string
      */
     public String GoogleCredentialsFile();
+
+    public static final String PASSWORD_REQUEST_HEADER = "Password";
+
+    /**
+     * the API requests are password protected.
+     * This method returns the password which is to be used
+     * @return the API password
+     */
+    public String APIPassword();
 }

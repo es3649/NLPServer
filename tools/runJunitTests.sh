@@ -37,4 +37,4 @@ done
 echo $ARGS
 
 # do the tests
-java -cp "$LIBS" -ea org.junit.runner.JUnitCore $ARGS
+java -mx7g -cp "$LIBS" -ea org.junit.runner.JUnitCore $ARGS
