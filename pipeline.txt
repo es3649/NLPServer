@@ -1,0 +1,8 @@
+1. what kind of question is this?
+  - yes/no (does bishop have time ___ , can I set up an appointment with bishop)
+  - when (when is my appt.; when is bishop available on ___ )
+2. Document retreival
+  - hit the appropriate sheets API
+  - get the information from the relevant sheet
+3. Based on answer type, format information to match the question type
+  - do we want to use prolog for this?

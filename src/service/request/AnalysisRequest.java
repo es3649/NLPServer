@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 
 import main.Server;
 import service.exception.BadRequestException;
+import service.model.Conversation;
 import service.response.MessageResponse;
 import service.response.Serializable;
 
@@ -17,6 +18,7 @@ public class AnalysisRequest implements Serializable {
     private String message;
     private String name;
     private String number;
+    private Conversation conversation;
 
     /**
      * Creates a new AnalysisRequest object from a json string
@@ -59,6 +61,20 @@ public class AnalysisRequest implements Serializable {
      * @return the validity of this instance
      */
     public boolean isValid() {
+        // none of these fields should be null
+        // name and conversation should not both be null 
+        // (a name can take the place of a conversation, a conversation will be constructed)
+        if (message == null
+            || number == null
+            || (name == null && conversation == null)) {
+            return false;
+        }
+
+        // If there is a conversation, make sure it is valid.
+        if (conversation != null) {
+            return conversation.isValid();
+        }
+
         return true;
     }
 
@@ -70,18 +86,22 @@ public class AnalysisRequest implements Serializable {
     public String getMessage() {
         return message;
     }
-
     /**
      * @return the name
      */
     public String getName() {
         return name;
     }
-
     /**
      * @return the number
      */
     public String getNumber() {
         return number;
+    }
+    /**
+     * @return the conversation
+     */
+    public Conversation getConversation() {
+        return conversation;
     }
 }

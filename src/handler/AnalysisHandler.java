@@ -43,24 +43,17 @@ public class AnalysisHandler extends Handler {
 
         // check if the header even exists
         if (!requestHeaders.containsKey(PasswordProvider.PASSWORD_REQUEST_HEADER)) {
+            Server.logger.log(Level.FINE, "Key not found in header");
             return false;
         }
 
         // get the bytestring of the hash value from the headers
-        byte[] receivedHash = requestHeaders.getFirst(PasswordProvider.PASSWORD_REQUEST_HEADER).getBytes();
-
-        // calcuate the hash of the known password
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] passwordHash = digest.digest(Server.password.APIPassword().getBytes(StandardCharsets.UTF_8));
-
-            // compare hashes and return
-            return Arrays.equals(receivedHash, passwordHash);
-        } catch (NoSuchAlgorithmException ex) {
-            Server.logger.log(Level.SEVERE, "Hash algorithm not found", ex);
-        }
         
-        return false;
+        String pass = requestHeaders.getFirst(PasswordProvider.PASSWORD_REQUEST_HEADER);
+        
+        Server.logger.log(Level.FINE, pass);
+
+        return pass.equals(Server.password.APIPassword());
     }
 
     /**
@@ -80,6 +73,8 @@ public class AnalysisHandler extends Handler {
             // read the string from the request and create a request object
             String requestJson = readAllBytes(requestBody);
             AnalysisRequest req = AnalysisRequest.fromJson(requestJson);
+            
+            }
 
             return service.serve(req);
         } catch (IOException ex) {

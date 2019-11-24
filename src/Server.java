@@ -87,7 +87,7 @@ public class Server {
 
     /**
      * main begins hosting the Server
-     * @param args command line arguments (TODO docs for these)
+     * @param args command line arguments, a port number to host on, defaults to 443
      */
     public static void main(String args[]) {
         int port;
@@ -199,6 +199,7 @@ public class Server {
         server.createContext("/", new handler.FileHandler());
         // we need a process handler
         server.createContext("/analyze", new handler.AnalysisHandler());
+        // TODO consider adding a handler with a more granular readout, for debugging
 
         // start the server!
         System.out.println("Starting server...");
