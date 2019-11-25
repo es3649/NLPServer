@@ -53,7 +53,7 @@ public class ScheduleManager {
      * @param options the list of appointments to choose from
      * @return the "optimal" choice from these options
      */
-    public Calendar chooseOptimal(List<Calendar> options) {
+    private Calendar chooseOptimal(List<Calendar> options) {
         assert false;
         return null;
     }
@@ -73,6 +73,15 @@ public class ScheduleManager {
      *  - Set apart
      */
     public String resolvePersonByPurpose(String purpose) {
+        assert false;
+        return null;
+    }
+
+    /**
+     * Gets the best available time.
+     * @return the best available appointment slot
+     */
+    public Calendar getApptSlot() {
         assert false;
         return null;
     }

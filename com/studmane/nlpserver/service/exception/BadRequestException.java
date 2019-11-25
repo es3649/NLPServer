@@ -1,6 +1,6 @@
 package com.studmane.nlpserver.service.exception;
 
-import service.response.MessageResponse;
+import com.studmane.nlpserver.service.response.MessageResponse;
 
 /**
  * an exception class denoting a bad request

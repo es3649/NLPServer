@@ -38,7 +38,7 @@ public class AnalysisRequest implements Serializable {
         }
 
         Server.logger.log(Level.INFO, 
-            String.format("Parser AnalysisRequest from Json: %s", req.toString()));
+            String.format("Parsed AnalysisRequest from Json: %s", req.toString()));
 
         // validate
         if (!req.isValid()) {
