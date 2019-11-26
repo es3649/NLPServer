@@ -29,14 +29,14 @@ import javax.net.ssl.SSLParameters;
 import javax.net.ssl.TrustManagerFactory;
 
 
-import com.sun.net.httpserver.HttpHandler;
+// import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
 import com.sun.net.httpserver.HttpsServer;
 
-import handler.*;
-import main.Password;
-import main.PasswordProvider;
+import com.studmane.nlpserver.handler.*;
+import com.studmane.nlpserver.Password;
+import com.studmane.nlpserver.PasswordProvider;
 
 
 /** class Server
@@ -196,9 +196,9 @@ public class Server {
         System.out.println("Creating contexts");
 
         // a file handler in case we want to serve up webpages
-        server.createContext("/", new handler.FileHandler());
+        server.createContext("/", new com.studmane.nlpserver.handler.FileHandler());
         // we need a process handler
-        server.createContext("/analyze", new handler.AnalysisHandler());
+        server.createContext("/analyze", new AnalysisHandler());
         // TODO consider adding a handler with a more granular readout, for debugging
 
         // start the server!

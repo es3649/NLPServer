@@ -1,22 +1,22 @@
 package com.studmane.nlpserver.handler;
 
-import handler.Handler;
-import main.PasswordProvider;
-import main.Server;
-import service.AnalysisService;
-import service.exception.ServiceErrorException;
-import service.request.AnalysisRequest;
-import service.response.AnalysisResponse;
-import service.response.MessageResponse;
-import service.response.Serializable;
+import com.studmane.nlpserver.PasswordProvider;
+import com.studmane.nlpserver.Server;
+import com.studmane.nlpserver.handler.Handler;
+import com.studmane.nlpserver.service.AnalysisService;
+import com.studmane.nlpserver.service.exception.ServiceErrorException;
+import com.studmane.nlpserver.service.request.AnalysisRequest;
+// import com.studmane.nlpserver.service.response.AnalysisResponse;
+import com.studmane.nlpserver.service.response.MessageResponse;
+import com.studmane.nlpserver.service.response.Serializable;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
+// import java.nio.charset.StandardCharsets;
+// import java.security.MessageDigest;
+// import java.security.NoSuchAlgorithmException;
+// import java.util.Arrays;
 import java.util.logging.Level;
 
 import com.sun.net.httpserver.Headers;
@@ -74,9 +74,8 @@ public class AnalysisHandler extends Handler {
             String requestJson = readAllBytes(requestBody);
             AnalysisRequest req = AnalysisRequest.fromJson(requestJson);
             
-            }
-
             return service.serve(req);
+
         } catch (IOException ex) {
             return new MessageResponse("Failed to get request body");
         }

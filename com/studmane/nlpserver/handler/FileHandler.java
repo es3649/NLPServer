@@ -1,8 +1,8 @@
 package com.studmane.nlpserver.handler;
 
-import java.io.FileInputStream;
+// import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+// import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.nio.file.Files;
@@ -13,7 +13,7 @@ import java.util.logging.Level;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import main.Server;
+import com.studmane.nlpserver.Server;
 
 /**
  * a file handler for serving up webpages

@@ -9,13 +9,13 @@ import java.util.logging.Level;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import main.Server;
-import service.exception.BadRequestException;
+import com.studmane.nlpserver.Server;
+import com.studmane.nlpserver.service.exception.BadRequestException;
 // import service.exception.InvalidLoginException;
-import service.exception.ServiceErrorException;
+import com.studmane.nlpserver.service.exception.ServiceErrorException;
 // import service.exception.ThatsNotYoursException;
-import service.response.MessageResponse;
-import service.response.Serializable;
+import com.studmane.nlpserver.service.response.MessageResponse;
+import com.studmane.nlpserver.service.response.Serializable;
 
 /**
  * Handler class is an abstract superclass that holds code relevant to all handlers

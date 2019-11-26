@@ -8,6 +8,8 @@ import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations;
 import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 import edu.stanford.nlp.trees.*;
 import edu.stanford.nlp.util.*;
+
+import com.studmane.nlpserver.service.discourse.DiscourseManager;
 import com.studmane.nlpserver.service.exception.ServiceErrorException;
 import com.studmane.nlpserver.service.model.Conversation;
 import com.studmane.nlpserver.service.model.MessageIntent;
@@ -35,7 +37,7 @@ public class AnalysisService {
         props.setProperty("annotators","tokenize,ssplit,pos,lemma,ner,depparse,natlog,openie");
         // props.setProperty("annotators","tokenize,ssplit,pos,lemma,ner,parse,coref,kbp");
 
-        this.pipeline = new StanfordCoreNLP(props);
+        pipeline = new StanfordCoreNLP(props);
     }
 
     
@@ -67,7 +69,15 @@ public class AnalysisService {
         AnalysisResponse resp = new AnalysisResponse();
 
         // generate a response and store it in the response
-        resp.setMessage(dm.reply(messageIntent, conv));
+        try {
+            resp.setMessage(dm.reply(messageIntent, conv));
+        } catch (IOException ex) {
+            // todo deal with this
+            assert false;
+        } catch (IllegalStateException ex) {
+            // also deal with this
+            assert false;
+        }
 
         // save the number and the old conversation
         resp.setConversation(conv);

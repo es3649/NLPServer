@@ -1,4 +1,4 @@
-package service;
+package com.studmane.nlpserver.service;
 
 import org.junit.*;
 

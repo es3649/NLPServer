@@ -41,6 +41,7 @@ public class InformationExtractor {
         // }
 
         assert false;
+        return null;
     }
 
     /**
