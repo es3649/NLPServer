@@ -34,36 +34,22 @@ public class InformationExtractorTest {
 
     private List<String> messages = null;
 
-    @Test
-    public void basicTestInformationExtractor() {
-        //String message = "Hey Eric, I need to meet with the bishop this sunday.";
-        for (String message : messages) {
-
-            Annotation anno = AnalysisService.annotate(message);
-            
-            for (CoreMap sentence : anno.get(CoreAnnotations.SentencesAnnotation.class)) {
-                Collection<RelationTriple> triples = sentence.get(NaturalLogicAnnotations.RelationTriplesAnnotation.class);
-                
-                for (RelationTriple triple : triples) {
-                    System.out.println(triple.confidence + "\t" +
-                    triple.subjectLemmaGloss() + "\t<" +
-                    triple.relationLemmaGloss() + ">\t" +
-                    triple.objectLemmaGloss());
-                }
-            }
-        }
-    }
-
     // @Test
-    // public void testDocument() {
-    //     Document doc = new Document(message);
+    // public void basicTestInformationExtractor() {
+    //     //String message = "Hey Eric, I need to meet with the bishop this sunday.";
+    //     for (String message : messages) {
 
-    //     for (Sentence sent : doc.sentences()) {
-    //         for (RelationTriple triple : sent.openieTriples()) {
-    //             System.out.println(triple.confidence + "\t" +
+    //         Annotation anno = AnalysisService.annotate(message);
+            
+    //         for (CoreMap sentence : anno.get(CoreAnnotations.SentencesAnnotation.class)) {
+    //             Collection<RelationTriple> triples = sentence.get(NaturalLogicAnnotations.RelationTriplesAnnotation.class);
+                
+    //             for (RelationTriple triple : triples) {
+    //                 System.out.println(triple.confidence + "\t" +
     //                 triple.subjectLemmaGloss() + "\t<" +
     //                 triple.relationLemmaGloss() + ">\t" +
     //                 triple.objectLemmaGloss());
+    //             }
     //         }
     //     }
     // }

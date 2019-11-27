@@ -1,8 +1,9 @@
-package com.studmane.nlpserver.service.discourse;
+package com.studmane.nlpserver.service.model;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -14,11 +15,12 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.studmane.nlpserver.Server;
 
-class WordLattice {
+public class WordLattice {
     private String root;
     private Map<String, LatticeNode> lattice;
 
     private static final String LATTICE_LOC = "./libs/lattices/";
+    private static final Random generator = new Random(System.currentTimeMillis());
 
     private WordLattice(String latticeData) {}
 
@@ -38,11 +40,12 @@ class WordLattice {
         TypeToken<WordLattice> typTok = new TypeToken<WordLattice>() {};
         
         // // deserialize the json into a WordLattice
-        WordLattice wl = gson.fromJson(json, typeTok.getType());
+        WordLattice wl = gson.fromJson(json, typTok.getType());
 
         // normalize the weights in the lattice
         wl.assertValid();
         wl.normalize();
+        wl.assertValid();
         return wl;
     }
 
@@ -62,17 +65,17 @@ class WordLattice {
 
         // start with the root node of the lattice
         LatticeNode cur = lattice.get(root);
-        sb.append(cur.v);
-
-        Random generator = new Random(System.currentTimeMillis());
+        // sb.append(cur.v);
 
         // as long as there is a place to transition to...
         while (!cur.to.isEmpty()) {
             // move to the next state
             double rand = generator.nextDouble();
-
+            // System.out.println(rand);
+            
             // do a manual multinomial distribution (this is why things really need to be normalized)
             for (int i = 0; i < cur.to.size(); i++) {
+                // System.out.println(cur.v);
                 // dinishish rand by the weight
                 rand -= cur.w.get(i);
 
@@ -80,15 +83,18 @@ class WordLattice {
                 if (rand <= 0) {
                     // advance cur
                     cur = lattice.get(cur.to.get(i));
+                    break;
                 }
             }
 
             // append the transition string
             sb.append(cur.v);
-
         }
 
-        return sb.toString();
+        String resutRaw = sb.toString();
+        // TODO this needs to be formatted using the provided args
+        // assert false;
+        return resutRaw;
     }
 
     /**
@@ -98,7 +104,11 @@ class WordLattice {
      */
     private void normalize() {
         for (Map.Entry<String,LatticeNode> entry : this.lattice.entrySet()) {
+
+            // define a sum and a new list for the weights
             double sum = 0;
+            List<Double> newWeights = new ArrayList<>(entry.getValue().w.size());
+
             for (double weight : entry.getValue().w) {
                 sum += weight;
             }
@@ -106,17 +116,30 @@ class WordLattice {
             if (sum == 0 && !entry.getValue().w.isEmpty()) {
                 // then the sum of weights is 0, but there need to be weights
                 // let's default to a uniform distribution
-                double weight = 1/entry.getValue().w.size();
+                double weight = 1.0/entry.getValue().w.size();
+                Server.logger.log(Level.FINE, String.format("Smoothing 0s in key %s", entry.getKey()));
 
                 for (int i = 0; i < entry.getValue().w.size(); i++) {
-                    entry.getValue().w.set(i, weight);
+                    newWeights.add(weight);
                 }
-            } else {
+
+            } else {                
                 // then we need to normalize
                 for (int i = 0; i < entry.getValue().w.size(); i++) {
-                    entry.getValue().w.set(i, entry.getValue().w.get(i)/sum);
+                    newWeights.add(entry.getValue().w.get(i)/sum);
                 }
+
             }
+
+            // Build the new lattice node
+            LatticeNode n = new LatticeNode();
+            n.w = newWeights;
+            n.to = entry.getValue().to;
+            n.v = entry.getValue().v;
+
+            // update the new node
+            entry.setValue(n);
+            System.out.println(entry.getValue().w);
         }
     }
 
@@ -128,6 +151,19 @@ class WordLattice {
      */
     private void assertValid() throws IOException {
         for (Map.Entry<String, LatticeNode> entry : this.lattice.entrySet()) {
+
+            if (entry.getValue().w== null) {
+                throw new IOException(String.format("Null weight list on key %s", entry.getKey()));
+            }
+
+            if (entry.getValue().to == null) {
+                throw new IOException(String.format("Null transition list on key %s", entry.getKey()));
+            }
+
+            if (entry.getValue().v == null) {
+                throw new IOException(String.format("Null vlaue on key %s", entry.getKey()));
+            }
+
             if (entry.getValue().to.size() != entry.getValue().w.size()) {
                 throw new IOException(String.format("List length mismatch on key %s", entry.getKey()));
             }
@@ -142,6 +178,7 @@ class WordLattice {
      * created manually
      */
     class LatticeNode {
+        LatticeNode() {}
         String v;           // the string value in this node
         List<String> to;    // the nodes to which this node can transition
         List<Double> w;      // the weights on those transitions

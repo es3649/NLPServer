@@ -5,10 +5,10 @@ echo "Looking for .jar files..."
 
 LIBS="$(find -name "*.jar")"
 
-echo "Found the following libs:"
-for jar in $LIBS; do
-    echo " -| $jar"
-done
+# echo "Found the following libs:"
+# for jar in $LIBS; do
+#     echo " -| $jar"
+# done
 
 LIBS=".:bin/:$(echo $LIBS | sed "s@ @:@g"):"
 
@@ -16,7 +16,7 @@ LIBS=".:bin/:$(echo $LIBS | sed "s@ @:@g"):"
 echo
 echo "Looking for test files..."
 
-TESTS="$(find -name "*Test.java")"
+TESTS="$(find ./test/ -name "*Test.java")"
 
 echo "Found the following tests:"
 for test in $TESTS; do

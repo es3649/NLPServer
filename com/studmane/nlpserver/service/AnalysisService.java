@@ -9,7 +9,7 @@ import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 import edu.stanford.nlp.trees.*;
 import edu.stanford.nlp.util.*;
 
-import com.studmane.nlpserver.service.discourse.DiscourseManager;
+import com.studmane.nlpserver.service.DiscourseManager;
 import com.studmane.nlpserver.service.exception.ServiceErrorException;
 import com.studmane.nlpserver.service.model.Conversation;
 import com.studmane.nlpserver.service.model.MessageIntent;

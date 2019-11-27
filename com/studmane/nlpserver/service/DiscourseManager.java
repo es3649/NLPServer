@@ -1,4 +1,4 @@
-package com.studmane.nlpserver.service.discourse;
+package com.studmane.nlpserver.service;
 
 import com.studmane.nlpserver.service.model.Conversation;
 import com.studmane.nlpserver.service.model.MessageIntent;
@@ -9,6 +9,8 @@ import java.util.logging.Level;
 
 import com.studmane.nlpserver.Server;
 import com.studmane.nlpserver.service.ScheduleManager;
+import com.studmane.nlpserver.service.model.WordLattice;
+
 
 /**
  * DiscourseManager uses coreNLP annotation information and previously extracted information to generate a response.
